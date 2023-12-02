@@ -1,8 +1,3 @@
-<?php
-    include 'templates/header.php';
-   // include 'modelo.php';
-?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -10,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Dashboard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <style>
+        body {
+            font-size: 14px; /* Puedes ajustar este valor según sea necesario */
+        }
+
+        .tabla-productos {
+            font-size: 12px; /* Puedes ajustar este valor según sea necesario */
+        }
+
+        .form-control {
+            font-size: 12px; /* Puedes ajustar este valor según sea necesario */
+        }
+    </style>
 </head>
 <body>
 

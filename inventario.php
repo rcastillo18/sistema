@@ -1,8 +1,3 @@
-<?php
-    include 'templates/header.php';
-   // include 'modelo.php';
-?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
