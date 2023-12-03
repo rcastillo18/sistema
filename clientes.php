@@ -1,6 +1,7 @@
 <?php
     include 'templates/header.php';
-   // include 'modelo.php';
+    include 'modelo.php';
+    $clientes = mostrarClientes(); 
 ?>
 
 <!DOCTYPE html>
@@ -26,17 +27,22 @@
                         <th>Nombre</th>
                         <th>Saldo Disponible</th>
                         <th>Comentarios</th>
+                        <th>Telefono</th>
+                        <th>Editar</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Aquí puedes agregar dinámicamente los datos de los clientes desde tu base de datos -->
-                    <tr>
-                        <td>123456789</td>
-                        <td>Juan Pérez</td>
-                        <td>$500.00</td>
-                        <td>Cliente frecuente</td>
-                    </tr>
-                    <!-- Puedes agregar más filas según sea necesario -->
+                <?php foreach($clientes as $fila) { ?>
+                <tr>
+                    <td><?= $fila['idCedula']?></td>
+                    <td><?= $fila['nombre']?></td>
+                    <td><?= $fila['saldoDisDol']?></td>
+                    <td><?= $fila['comentarios']?></td>
+                    <td><?= $fila['telefono']?></td>
+                    <td style='text-align:center;'><a href="<?='actualizarCliente.php?id=' . $fila['idCedula'] ?>">EDITAR DATOS</a></td>
+                </tr>
+                
+                <?php } ?>
                 </tbody>
             </table>
         </div>

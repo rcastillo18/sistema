@@ -17,22 +17,22 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link" href="#">Ventas</a>
+                <a class="nav-link" href="javascript:top.location.href='../../sistema/ventas.php'">Ventas</a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="#">Inventario</a>
+                <a class="nav-link" href="javascript:top.location.href='../../sistema/pru.php'">Inventario</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Clientes</a>
+                <a class="nav-link" href="javascript:top.location.href='../../sistema/clientes.php'">Clientes</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Caja</a>
+                <a class="nav-link" href="javascript:top.location.href='../../sistema/pru.php'">Caja</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Informes</a>
+                <a class="nav-link" href="javascript:top.location.href='../../sistema/pru.php'">Informes</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Configuración</a>
+                <a class="nav-link" href="javascript:top.location.href='../../sistema/pru.php'">Configuración</a>
             </li>
         </ul>
     </div>

@@ -81,6 +81,18 @@ switch($accion){
         actualizar($idProducto ,$codigo, $descripcion, $costoUSD, $porcentajeG, $categoria, $precioGanUSD, $cantidadIngresar, $cantidadAlerta, $existencia); 
         break;
 
+    case 'agregar_Clientes':
+        $idCedula = ($_POST['idCedula']);
+        $nombre = strtoupper($_POST['nombre']);
+        $saldoDisBs = 0;//($_POST['saldoDisBs']);
+        $saldoDisDol = 0;//($_POST['saldoDisDol']);
+        $deuda = 0;//($_POST['deuda']);
+        $pagoDeudaDol = 0;//($_POST['pagoDeudaDol']);
+        $comentarios = strtoupper($_POST['comentarios']);
+        $telefono = ($_POST['telefono']);
+        agregarC($idCedula ,$nombre, $saldoDisBs, $saldoDisDol, $deuda, $pagoDeudaDol, $comentarios, $telefono); 
+        break;
+
     case 'eliminarP':
         eliminarPlanificada($id);
         break;
@@ -501,6 +513,85 @@ function eliminarEjecutada($id){
     header('location:eliminarE.php');
 }
 
+function agregarC($idCedula ,$nombre, $saldoDisBs, $saldoDisDol, $deuda, $pagoDeudaDol, $comentarios, $telefono){
+    $resultado = [
+        'error' =>false,
+        'mensaje' => ''
+    ];
+        global $conexion;
+
+        try{
+             $sql = 'INSERT INTO cliente (idCedula ,nombre, saldoDisBs, saldoDisDol, deuda, pagoDeudaDol, comentarios, telefono) VALUES (?,?,?,?,?,?,?,?)';
+            
+            $st = $conexion->prepare($sql);
+            $st->bindParam(1, $idCedula);
+            $st->bindParam(2, $nombre);
+            $st->bindParam(3, $saldoDisBs);
+            $st->bindParam(4, $saldoDisDol);
+            $st->bindParam(5, $deuda);
+            $st->bindParam(6, $pagoDeudaDol);
+            $st->bindParam(7, $comentarios);
+            $st->bindParam(8, $telefono);
+            $st->execute(); 
+            header('location:pru.php');
+         //   echo '<script>
+			//	 Recarga todos los frames de la página
+			//	 parent.location.reload();
+			//	 </script>';
+
+        }catch(PDOException $e){
+            $resultado['error'] = true;
+            $resultado['mensaje'] = $e->getMessage();
+            echo $e;
+        }
+}
+
+function mostrarClientes(){   
+    $resultado = [
+        'error' =>false,
+        'mensaje' => ''
+    ];
+
+    global $conexion;
+
+    try{
+        
+        $sql = 'SELECT idCedula ,nombre, saldoDisBs, saldoDisDol, deuda, pagoDeudaDol, comentarios, telefono FROM cliente ORDER BY idCedula';
+        $st = $conexion->prepare($sql);
+        $st->execute();
+        $clientes = $st->fetchAll();        
+    }catch(PDOException $e){
+        $resultado['error'] = true;
+        $resultado['mensaje'] = $e->getMessage();
+        echo $e;
+    }
+    return $clientes;	
+}
+
+function consultarCliente($id){   
+    $resultado = [
+        'error' =>false,
+        'mensaje' => ''
+    ];
+    global $conexion;
+
+    try{
+       
+        $sql = "SELECT * FROM cliente WHERE idCedula = ? ";
+            $st = $conexion->prepare($sql);
+            $st->bindParam(1, $id);
+            $st->execute();
+            $consultarC = $st->fetch(PDO::FETCH_ASSOC); 
+ 
+    }catch(PDOException $e){
+        $resultado['error'] = true;
+        $resultado['mensaje'] = $e->getMessage();
+        //echo $e;
+    }
+    return $consultarC;
+}
+
+
 function actualizar($idProducto, $codigo, $descripcion, $costoUSD, $porcentajeG, $categoria, $precioGanUSD, $cantidadIngresar, $cantidadAlerta, $existencia){
     $resultado = [
         'error' =>false,
@@ -560,10 +651,11 @@ function productos($idProducto, $codigo, $descripcion, $costoUSD, $porcentajeG, 
             $st->bindParam(9, $cantidadAlerta);
             $st->bindParam(10, $existencia);
             $st->execute(); 
-            echo '<script>
+            header('location:pru.php');
+           // echo '<script>
 				 // Recarga todos los frames de la página
-				 parent.location.reload();
-				 </script>';
+			//	 parent.location.reload();
+			//	 </script>';
 
         }catch(PDOException $e){
             $resultado['error'] = true;
