@@ -66,7 +66,7 @@
                     <td><?= $fila['existencia']?></td>
                     <td><?= $fila['categoria']?></td>
                     <td><?= $fila['cantidadAlerta']?></td>
-                    <td style='text-align:center;'><a href="<?='editar_reprogramada.php?id=' . $fila['idProducto'] ?>">EDITAR DATOS</a></td>
+                    <td style='text-align:center;'><a href="<?='actualizarProducto.php?id=' . $fila['idProducto'] ?>">EDITAR DATOS</a></td>
                 </tr>
                 
                 <?php } ?>

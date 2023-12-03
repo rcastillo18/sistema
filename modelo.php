@@ -67,25 +67,18 @@ switch($accion){
         editar_datosE($id_AE ,$id_AP, $hora_InicioE, $hora_FinalE, $num_Atendidos, $num_Atendidas, $serv_Entregado, $unidad_Medida, $conclusiones, $acuerdos, $observaciones);        
         break;
 
-    case 'modificar_P':
-        $id_AP= ($_GET['id_AP']);
-        $id_Usuario= ($_GET['id_Usuario']);
-        $fecha_Registro= ($_GET['fecha_Registro']);
-        $responsable_Unidad=($_GET['responsable_Unidad']);
-        $plan_Operativo=($_GET['plan_Operativo']);
-        $nom_Responsable = strtoupper ($_GET['nom_Responsable']);
-        $nom_Actividad = strtoupper($_GET['nom_Actividad']);
-        $nom_Cientifica = strtoupper($_GET['nom_Cientifica']);
-        $estado = strtoupper($_GET['estado']);
-        $municipio = strtoupper($_GET['municipio']);
-        $parroquia = strtoupper($_GET['parroquia']);
-        $fecha_Actividad = strtoupper($_GET['fecha_Actividad']);
-        $hora_Inicio = ($_GET['hora_Inicio']);
-        $hora_Final = ($_GET['hora_Final']);
-        $objetivo_Actividad = strtoupper($_GET['objetivo_Actividad']);
-        $descripcion_Actividad = strtoupper($_GET['descripcion_Actividad']);
-        $organizacion_Actividad = strtoupper($_GET['organizacion_Actividad']);
-        editar_datosP($id_AP, $id_Usuario, $fecha_Registro, $responsable_Unidad, $plan_Operativo, $nom_Responsable, $nom_Actividad, $nom_Cientifica, $estado, $municipio, $parroquia, $fecha_Actividad, $hora_Inicio, $hora_Final, $objetivo_Actividad, $descripcion_Actividad, $organizacion_Actividad);        
+    case 'actualizar_Producto':
+        $idProducto = ($_POST['idProducto']);
+        $codigo = ($_POST['codigo']);
+        $descripcion = strtoupper($_POST['descripcion']);
+        $costoUSD = ($_POST['costoUSD']);
+        $porcentajeG = ($_POST['porcentajeG']);
+        $categoria = strtoupper($_POST['categoria']);
+        $precioGanUSD = ((($_POST['costoUSD']*($_POST['porcentajeG']))/100)+($_POST['costoUSD']));
+        $cantidadIngresar = ($_POST['cantidadIngresar']);
+        $cantidadAlerta = ($_POST['cantidadAlerta']);
+        $existencia = ($_POST['cantidadIngresar']);
+        actualizar($idProducto ,$codigo, $descripcion, $costoUSD, $porcentajeG, $categoria, $precioGanUSD, $cantidadIngresar, $cantidadAlerta, $existencia); 
         break;
 
     case 'eliminarP':
@@ -233,7 +226,7 @@ function mostrarConfig(){
     return $config;
 }
 
-function consultarReprogramada($id){   
+function consultarProducto($id){   
     $resultado = [
         'error' =>false,
         'mensaje' => ''
@@ -242,17 +235,18 @@ function consultarReprogramada($id){
 
     try{
        
-        $sql = "SELECT * FROM actividad_reprogramada WHERE id_AR = ? ";
+        $sql = "SELECT * FROM producto WHERE idProducto = ? ";
             $st = $conexion->prepare($sql);
             $st->bindParam(1, $id);
             $st->execute();
-            $reprogramadas = $st->fetch(PDO::FETCH_ASSOC); 
+            $consultarP = $st->fetch(PDO::FETCH_ASSOC); 
  
     }catch(PDOException $e){
         $resultado['error'] = true;
         $resultado['mensaje'] = $e->getMessage();
+        //echo $e;
     }
-    return $reprogramadas;
+    return $consultarP;
 }
 
 function editar_datosR($id_AR ,$id_AP, $fecha_RegistroR, $fecha_ActividadR, $hora_InicioR, $hora_FinalR, $observacionesR){ 
@@ -507,6 +501,41 @@ function eliminarEjecutada($id){
     header('location:eliminarE.php');
 }
 
+function actualizar($idProducto, $codigo, $descripcion, $costoUSD, $porcentajeG, $categoria, $precioGanUSD, $cantidadIngresar, $cantidadAlerta, $existencia){
+    $resultado = [
+        'error' =>false,
+        'mensaje' => ''
+    ];
+        global $conexion;
+
+        try{
+             $sql = 'UPDATE producto SET (codigo = ?, descripcion = ?, costoUSD = ?, porcentajeG = ?, categoria = ?, precioGanUSD = ?, cantidadIngresar = ?, cantidadAlerta = ?, existencia = ?) WHERE idProducto = ? ';
+            
+            $st = $conexion->prepare($sql);
+            
+            $st->bindParam(1, $codigo);
+            $st->bindParam(2, $descripcion);
+            $st->bindParam(3, $costoUSD);
+            $st->bindParam(4, $porcentajeG);
+            $st->bindParam(5, $categoria);
+            $st->bindParam(6, $precioGanUSD);
+            $st->bindParam(7, $cantidadIngresar);
+            $st->bindParam(8, $cantidadAlerta);
+            $st->bindParam(9, $existencia);
+            $st->bindParam(10, $idProducto);
+            $st->execute();
+
+            echo '<script>
+                 // Recarga todos los frames de la página
+                 parent.location.reload();
+                 </script>';
+
+        }catch(PDOException $e){
+            $resultado['error'] = true;
+            $resultado['mensaje'] = $e->getMessage();
+            echo $e;
+        }
+}
 //FUNCIONES PARA ACTIVIDADES PLANIFICADAS
 
 function productos($idProducto, $codigo, $descripcion, $costoUSD, $porcentajeG, $categoria, $precioGanUSD, $cantidadIngresar, $cantidadAlerta, $existencia){
