@@ -8,7 +8,7 @@
 
     <frameset cols="30%, 70%" border="1" noresize>
         <frame src="registrarProductos.php" scrolling="auto"> <!-- Contenido de la columna izquierda -->
-        <frame src="inventario.php" scrolling="yes"> <!-- Contenido de la columna derecha -->
+        <frame src="inventario.php" scrolling="auto"> <!-- Contenido de la columna derecha -->
     </frameset>
     <noframes>
         <body>

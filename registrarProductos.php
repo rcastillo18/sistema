@@ -1,3 +1,29 @@
+<?php 
+  include 'modelo.php';
+
+  $productos = mostrarProductos();
+  $numero = count($productos);
+//
+if ($numero == 0){
+    $numero = $numero + 1;
+    $aux = $numero;
+} else{
+foreach($productos as $row){
+    $row['idProducto'];
+    };
+
+    for ($i = 0; $i <= $numero ; $i++) {
+      $aux = $row[$i]+1;
+    
+    if ($numero == $aux) {
+       $aux = $row[$i]+2;
+    }else
+    break;
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -8,66 +34,81 @@
 
     <style>
         body {
-            font-size: 14px; /* Puedes ajustar este valor según sea necesario */
+            font-size: 16px; /* Puedes ajustar este valor según sea necesario */
+            line-height: 0.4; /* Ajusta el interlineado según tus preferencias */
+            margin: 0; /* Establece el margen de la página en 0 */
+            padding: 0; /* Establece el relleno de la página en 0 */
+        }
+
+        h4.card-title {
+            font-size: 17px; /* Puedes ajustar este valor según sea necesario */
+            margin-bottom: 0; /* Elimina el margen inferior del título */
         }
 
         .tabla-productos {
-            font-size: 12px; /* Puedes ajustar este valor según sea necesario */
+            font-size: 14px; /* Puedes ajustar este valor según sea necesario */
         }
 
         .form-control {
-            font-size: 12px; /* Puedes ajustar este valor según sea necesario */
+            font-size: 14px; /* Puedes ajustar este valor según sea necesario */
         }
     </style>
+    <script> function confirmacion(){
+            var respuesta = confirm("Confirme si desea agregar este nuevo producto?");
+            if (respuesta==true) {
+                return true;
+            }else {
+                return false;
+            }
+    }
+    </script>
 </head>
 <body>
 
 <!-- Contenido de la Página -->
-<div class="container mt-4">
+<div class="container">
     <!-- Sección de Inventario -->
     <div class="row">
         <div class="col-md-6">
             <!-- Formulario para Registrar un Nuevo Producto -->
             <div class="card">
                 <div class="card-header">
-                    <h4>Registrar Nuevo Producto</h4>
+                    <h4 class="card-title">Registrar Nuevo Producto</h4>
                 </div>
                 <div class="card-body">
-                    <form>
+                    <form form action="modelo.php" method="POST">
                         <div class="form-group">
                             <label for="codigo">Código:</label>
-                            <input type="text" class="form-control" id="codigo" placeholder="Ingrese el código">
+                            <input type="hidden" name="idProducto" value="<?php echo $aux ?>">
+                            <input type="text" class="form-control" id="codigo" name="codigo" placeholder="Ingrese el código">
                         </div>
                         <div class="form-group">
                             <label for="descripcion">Descripción:</label>
-                            <textarea class="form-control" id="descripcion" rows="2" placeholder="Ingrese la descripción"></textarea>
+                            <input type="text" class="form-control" id="descripcion" name="descripcion" rows="2" placeholder="Ingrese el nombre del Producto"></textarea>
                         </div>
                         <div class="form-group">
                             <label for="costo">Costo (USD):</label>
-                            <input type="text" class="form-control" id="costo" placeholder="Ingrese el costo">
+                            <input type="text" class="form-control" id="costoUSD" name="costoUSD" placeholder="Ingrese el costo">
                         </div>
                         <div class="form-group">
                             <label for="ganancia"> % de Ganancia:</label>
-                            <input type="text" class="form-control" id="ganancia" placeholder="Ingrese el porcentaje de ganancia">
+                            <input type="text" class="form-control" id="porcentajeG" name="porcentajeG" placeholder="Ingrese el porcentaje de ganancia">
                         </div>
                         <div class="form-group">
                             <label for="categoria">Categoría:</label>
-                            <input type="text" class="form-control" id="categoria" placeholder="Ingrese la categoría">
+                            <input type="text" class="form-control" id="categoria" name="categoria" placeholder="Ingrese la categoría">
                         </div>
                         <div class="form-group">
-                            <label for="cantidad">Cantidad a Ingresar:</label>
-                            <input type="text" class="form-control" id="cantidad" placeholder="Ingrese la cantidad">
+                            <label for="cantidadIngresar">Cantidad a Ingresar:</label>
+                            <input type="text" class="form-control" id="cantidadIngresar" name="cantidadIngresar" placeholder="Ingrese la cantidad">
                         </div>
                         <div class="form-group">
-                            <label for="comentarios">Comentarios:</label>
-                            <textarea class="form-control" id="comentarios" rows="2" placeholder="Ingrese comentarios"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="min_alerta">Cantidad Mínima para Alerta:</label>
-                            <input type="text" class="form-control" id="min_alerta" placeholder="Ingrese la cantidad mínima para alerta">
+                            <label for="cantidadAlerta">Cantidad Mínima para Alerta:</label>
+                            <input type="text" class="form-control" id="cantidadAlerta" name="cantidadAlerta" placeholder="Ingrese la cantidad mínima para alerta">
                         </div>
                         <button type="button" class="btn btn-warning">Limpiar</button>
-                        <button type="button" class="btn btn-success">Guardar</button>
+                        <input type="hidden" name='accion_ingreso' value='nuevo_Producto'>
+                        <button onclick="return confirmacion()" type="submit" class="btn btn-success">Guardar</button>
                     </form>
                 </div>
             </div>
