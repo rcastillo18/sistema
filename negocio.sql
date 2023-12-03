@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 03-12-2023 a las 15:00:13
+-- Tiempo de generación: 03-12-2023 a las 15:08:07
 -- Versión del servidor: 10.4.24-MariaDB
 -- Versión de PHP: 8.1.6
 
@@ -143,6 +143,32 @@ CREATE TABLE `usuarios` (
   `nivelAcceso` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `venta`
+--
+
+CREATE TABLE `venta` (
+  `idVenta` int(5) NOT NULL,
+  `idCedula` int(5) NOT NULL,
+  `idProducto` int(5) NOT NULL,
+  `totalPagar` int(11) NOT NULL,
+  `fecha` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
+  `deudaCredito` int(11) NOT NULL,
+  `comentario` varchar(50) COLLATE utf8_spanish_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `venta`
+--
+
+INSERT INTO `venta` (`idVenta`, `idCedula`, `idProducto`, `totalPagar`, `fecha`, `deudaCredito`, `comentario`) VALUES
+(1, 26214491, 2, 3, '28/11/2023', 1, 'ninguno'),
+(2, 26214491, 1, 1, '28/11/2023', 1, 'ninguno'),
+(3, 26214491, 2, 2, '28/11/2023', 1, 'ninguno'),
+(4, 19327039, 3, 1, '28/11/2023', 50, 'ninguno');
+
 --
 -- Índices para tablas volcadas
 --
@@ -176,6 +202,12 @@ ALTER TABLE `producto`
 --
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`idUsuario`);
+
+--
+-- Indices de la tabla `venta`
+--
+ALTER TABLE `venta`
+  ADD PRIMARY KEY (`idVenta`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
