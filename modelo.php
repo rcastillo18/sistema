@@ -77,8 +77,8 @@ switch($accion){
         $precioGanUSD = ((($_POST['costoUSD']*($_POST['porcentajeG']))/100)+($_POST['costoUSD']));
         $cantidadIngresar = ($_POST['cantidadIngresar']);
         $cantidadAlerta = ($_POST['cantidadAlerta']);
-        $existencia = ($_POST['cantidadIngresar']);
-        actualizar($idProducto ,$codigo, $descripcion, $costoUSD, $porcentajeG, $categoria, $precioGanUSD, $cantidadIngresar, $cantidadAlerta, $existencia); 
+        $existencia = ($_POST['existencia'] + $_POST['cantidadIngresar']);
+        actualizar($codigo, $descripcion, $costoUSD, $porcentajeG, $categoria, $precioGanUSD, $cantidadIngresar, $cantidadAlerta, $existencia, $idProducto); 
         break;
 
     case 'eliminarP':
@@ -501,7 +501,7 @@ function eliminarEjecutada($id){
     header('location:eliminarE.php');
 }
 
-function actualizar($idProducto, $codigo, $descripcion, $costoUSD, $porcentajeG, $categoria, $precioGanUSD, $cantidadIngresar, $cantidadAlerta, $existencia){
+function actualizar($codigo, $descripcion, $costoUSD, $porcentajeG, $categoria, $precioGanUSD, $cantidadIngresar, $cantidadAlerta, $existencia, $idProducto){
     $resultado = [
         'error' =>false,
         'mensaje' => ''
@@ -509,7 +509,7 @@ function actualizar($idProducto, $codigo, $descripcion, $costoUSD, $porcentajeG,
         global $conexion;
 
         try{
-             $sql = 'UPDATE producto SET (codigo = ?, descripcion = ?, costoUSD = ?, porcentajeG = ?, categoria = ?, precioGanUSD = ?, cantidadIngresar = ?, cantidadAlerta = ?, existencia = ?) WHERE idProducto = ? ';
+             $sql = 'UPDATE producto SET codigo = ?, descripcion = ?, costoUSD = ?, porcentajeG = ?, categoria = ?, precioGanUSD = ?, cantidadIngresar = ?, cantidadAlerta = ?, existencia = ? WHERE idProducto = ? ';
             
             $st = $conexion->prepare($sql);
             
@@ -529,7 +529,7 @@ function actualizar($idProducto, $codigo, $descripcion, $costoUSD, $porcentajeG,
                  // Recarga todos los frames de la página
                  parent.location.reload();
                  </script>';
-
+            //header('location:modificarE.php');
         }catch(PDOException $e){
             $resultado['error'] = true;
             $resultado['mensaje'] = $e->getMessage();

@@ -7,7 +7,7 @@
     <frame src="templates/header.php" scrolling="no"> <!-- Contenido de la fila superior -->
 
     <frameset cols="30%, 70%" border="1" noresize>
-        <frame src="actualizarProducto.php" scrolling="auto"> <!-- Contenido de la columna izquierda -->
+        <frame src="inventario.php" scrolling="auto"> <!-- Contenido de la columna izquierda -->
         <frame src="inventario.php" scrolling="auto"> <!-- Contenido de la columna derecha -->
     </frameset>
     <noframes>

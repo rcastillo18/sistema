@@ -101,7 +101,7 @@
                         </div>
                         <div class="form-group">
                             <label for="existencia">Cantidad en existencia:</label>
-                            <input type="text" class="form-control" id="existencia" name="existencia" value="<?php echo $fila['existencia']; ?>">
+                            <input type="text" class="form-control" id="existencia" name="existencia" value="<?php echo $fila['existencia']; ?>" readonly >
                         </div>
                         <button type="button" class="btn btn-warning">Limpiar</button>
                         <input type="hidden" name='accion_ingreso' value='actualizar_Producto'>
