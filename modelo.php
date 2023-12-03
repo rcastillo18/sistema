@@ -93,6 +93,19 @@ switch($accion){
         agregarC($idCedula ,$nombre, $saldoDisBs, $saldoDisDol, $deuda, $pagoDeudaDol, $comentarios, $telefono); 
         break;
 
+    case 'actualizar_Clientes':
+        $idCedula = ($_POST['idCedula']);
+        $nombre = strtoupper($_POST['nombre']);
+        $saldoDisBs = 0;//($_POST['saldoDisBs']);
+        $saldoDisDol = 0;//($_POST['saldoDisDol']);
+        $deuda = 0;//($_POST['deuda']);
+        $pagoDeudaDol = 0;//($_POST['pagoDeudaDol']);
+        $comentarios = strtoupper($_POST['comentarios']);
+        $telefono = ($_POST['telefono']);
+        actualizarC($idCedula ,$nombre, $saldoDisBs, $saldoDisDol, $deuda, $pagoDeudaDol, $comentarios, $telefono);  
+        break;
+
+
     case 'eliminarP':
         eliminarPlanificada($id);
         break;
@@ -591,6 +604,39 @@ function consultarCliente($id){
     return $consultarC;
 }
 
+function actualizarC($idCedula ,$nombre, $saldoDisBs, $saldoDisDol, $deuda, $pagoDeudaDol, $comentarios, $telefono){
+    $resultado = [
+        'error' =>false,
+        'mensaje' => ''
+    ];
+        global $conexion;
+
+        try{
+             $sql = 'UPDATE cliente SET nombre = ?, saldoDisBs = ?, saldoDisDol = ?, deuda = ?, pagoDeudaDol = ?, comentarios = ?, telefono = ? WHERE idCedula = ? ';
+            
+            $st = $conexion->prepare($sql);
+            
+            $st->bindParam(1, $nombre);
+            $st->bindParam(2, $saldoDisBs);
+            $st->bindParam(3, $saldoDisDol);
+            $st->bindParam(4, $deuda);
+            $st->bindParam(5, $pagoDeudaDol);
+            $st->bindParam(6, $comentarios);
+            $st->bindParam(7, $telefono);
+            $st->bindParam(8, $idCedula);
+            $st->execute();
+
+       //     echo '<script>
+                 // Recarga todos los frames de la página
+       //          parent.location.reload();
+       //          </script>';
+            header('location:clientes.php');
+        }catch(PDOException $e){
+            $resultado['error'] = true;
+            $resultado['mensaje'] = $e->getMessage();
+            echo $e;
+        }
+}
 
 function actualizar($codigo, $descripcion, $costoUSD, $porcentajeG, $categoria, $precioGanUSD, $cantidadIngresar, $cantidadAlerta, $existencia, $idProducto){
     $resultado = [

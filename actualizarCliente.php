@@ -45,7 +45,7 @@
                     <label for="telefono">Teléfono:</label>
                     <input type="tel" class="form-control" id="telefono" name="telefono">
                 </div>
-                <input type="hidden" name='accion_ingreso' value='agregar_Clientes'>
+                <input type="hidden" name='accion_ingreso' value='actualizar_Clientes'>
                 <button type="submit" class="btn btn-primary">Guardar Cliente</button>
             </form>
         </div>
