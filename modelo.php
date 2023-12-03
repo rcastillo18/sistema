@@ -533,7 +533,7 @@ function agregarC($idCedula ,$nombre, $saldoDisBs, $saldoDisDol, $deuda, $pagoDe
             $st->bindParam(7, $comentarios);
             $st->bindParam(8, $telefono);
             $st->execute(); 
-            header('location:pru.php');
+            header('location:clientes.php');
          //   echo '<script>
 			//	 Recarga todos los frames de la página
 			//	 parent.location.reload();
