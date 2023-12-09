@@ -2,7 +2,7 @@
   include 'modelo.php';
 
   $inventario = mostrarProductos();
-  $config= mostrarConfig();
+  $config= mostrarConfigu();
   foreach ($config as $filas) {
       $tasaDCosto = $filas['tasaDolarCosto'];
       $tasaDVenta = $filas['tasaDolarVenta'];

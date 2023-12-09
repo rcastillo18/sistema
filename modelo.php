@@ -67,6 +67,34 @@ switch($accion){
         editar_datosE($id_AE ,$id_AP, $hora_InicioE, $hora_FinalE, $num_Atendidos, $num_Atendidas, $serv_Entregado, $unidad_Medida, $conclusiones, $acuerdos, $observaciones);        
         break;
 
+    case 'actualizar_Configuracion':
+        $idEmpresa = ($_POST['idEmpresa']);
+        $nombre = strtoupper($_POST['nombre']);
+        $rif = ($_POST['rif']);
+        $telefono = ($_POST['telefono']);
+        $correo = strtoupper($_POST['correo']);
+        $direccion = strtoupper($_POST['direccion']);
+        $ciudad = strtoupper($_POST['ciudad']);
+        $estado = strtoupper($_POST['estado']);
+        $codigoPostal = ($_POST['codigoPostal']);
+        $mensaje = strtoupper($_POST['mensaje']);
+        actualizarConfig($idEmpresa, $nombre, $rif, $telefono, $correo, $direccion, $ciudad, $estado, $codigoPostal, $mensaje); 
+        break;
+
+    case 'actualizar_Empresa':
+        $idEmpresa = ($_POST['idEmpresa']);
+        $nombre = strtoupper($_POST['nombre']);
+        $rif = ($_POST['rif']);
+        $telefono = ($_POST['telefono']);
+        $correo = strtoupper($_POST['correo']);
+        $direccion = strtoupper($_POST['direccion']);
+        $ciudad = strtoupper($_POST['ciudad']);
+        $estado = strtoupper($_POST['estado']);
+        $codigoPostal = ($_POST['codigoPostal']);
+        $mensaje = strtoupper($_POST['mensaje']);
+        actualizarE($idEmpresa, $nombre, $rif, $telefono, $correo, $direccion, $ciudad, $estado, $codigoPostal, $mensaje); 
+        break;
+
     case 'actualizar_Producto':
         $idProducto = ($_POST['idProducto']);
         $codigo = ($_POST['codigo']);
@@ -228,27 +256,6 @@ function reprogramada($id_AR, $id_AP, $fecha_RegistroR, $fecha_ActividadR, $hora
             echo $e;
          }
 
-}
-
-function mostrarConfig(){   
-    $resultado = [
-        'error' =>false,
-        'mensaje' => ''
-    ];
-
-    global $conexion;
-
-    try{
-        
-        $sql = 'SELECT idConfiguracion ,tasaDolarCosto, tasaDolarVenta, impresora FROM configuracion ORDER BY idConfiguracion';
-        $st = $conexion->prepare($sql);
-        $st->execute();
-        $config = $st->fetchAll();        
-    }catch(PDOException $e){
-        $resultado['error'] = true;
-        $resultado['mensaje'] = $e->getMessage();
-    }
-    return $config;
 }
 
 function consultarProducto($id){   
@@ -636,6 +643,139 @@ function actualizarC($idCedula ,$nombre, $saldoDisBs, $saldoDisDol, $deuda, $pag
             $resultado['mensaje'] = $e->getMessage();
             echo $e;
         }
+}
+
+function actualizarConfig($idConfiguracion, $tasaDolarCosto, $tasaDolarVenta, $impresora){
+    $resultado = [
+        'error' =>false,
+        'mensaje' => ''
+    ];
+        global $conexion;
+
+        try{
+             $sql = 'UPDATE configuracion SET idConfiguracion = ?, tasaDolarCosto = ?, tasaDolarVenta = ?, impresora = ?';
+            
+            $st = $conexion->prepare($sql);
+            
+            $st->bindParam(1, $idConfiguracion);
+            $st->bindParam(2, $tasaDolarCosto);
+            $st->bindParam(3, $tasaDolarVenta);
+            $st->bindParam(4, $impresora);
+            $st->execute();
+
+       //     echo '<script>
+       //          // Recarga todos los frames de la página
+       //          parent.location.reload();
+       //          </script>';
+            header('location:config.php');
+        }catch(PDOException $e){
+            $resultado['error'] = true;
+            $resultado['mensaje'] = $e->getMessage();
+            echo $e;
+        }
+}
+
+function mostrarConfig(){   
+    $resultado = [
+        'error' => false,
+        'mensaje' => '',
+        'configuracion' => []  // Inicializar el array para los resultados de la configuración
+    ];
+
+    global $conexion;
+
+    try{
+        $sql = 'SELECT idConfiguracion, tasaDolarCosto, tasaDolarVenta FROM configuracion ORDER BY idConfiguracion';
+        $st = $conexion->prepare($sql);
+        $st->execute();
+        $resultado['configuracion'] = $st->fetchAll(PDO::FETCH_ASSOC) ?: [];  // Devolver un array vacío si no hay resultados
+    } catch(PDOException $e){
+        $resultado['error'] = true;
+        $resultado['mensaje'] = $e->getMessage();
+        // Puedes comentar o eliminar la siguiente línea si no quieres imprimir el error aquí
+        echo $e;
+    }
+    return $resultado;
+}
+
+function mostrarConfigu(){   
+    $resultado = [
+        'error' =>false,
+        'mensaje' => ''
+    ];
+
+    global $conexion;
+
+    try{
+        
+        $sql = 'SELECT idConfiguracion ,tasaDolarCosto, tasaDolarVenta, impresora FROM configuracion ORDER BY idConfiguracion';
+        $st = $conexion->prepare($sql);
+        $st->execute();
+        $config = $st->fetchAll();        
+    }catch(PDOException $e){
+        $resultado['error'] = true;
+        $resultado['mensaje'] = $e->getMessage();
+    }
+    return $config;
+}
+
+function actualizarE($idEmpresa, $nombre, $rif, $telefono, $correo, $direccion, $ciudad, $estado, $codigoPostal, $mensaje){
+    $resultado = [
+        'error' =>false,
+        'mensaje' => ''
+    ];
+        global $conexion;
+
+        try{
+             $sql = 'UPDATE empresa SET nombre = ?, rif = ?, telefono = ?, correo = ?, direccion = ?, ciudad = ?, estado = ?, codigoPostal = ?, mensaje = ? WHERE idEmpresa = ? ';
+            
+            $st = $conexion->prepare($sql);
+            
+            $st->bindParam(1, $nombre);
+            $st->bindParam(2, $rif);
+            $st->bindParam(3, $telefono);
+            $st->bindParam(4, $correo);
+            $st->bindParam(5, $direccion);
+            $st->bindParam(6, $ciudad);
+            $st->bindParam(7, $estado);
+            $st->bindParam(8, $codigoPostal);
+            $st->bindParam(9, $mensaje);
+            $st->bindParam(10, $idEmpresa);
+            $st->execute();
+
+       //     echo '<script>
+       //          // Recarga todos los frames de la página
+       //          parent.location.reload();
+       //          </script>';
+            header('location:config.php');
+        }catch(PDOException $e){
+            $resultado['error'] = true;
+            $resultado['mensaje'] = $e->getMessage();
+            echo $e;
+        }
+}
+
+function mostrarEmpresa(){   
+    $resultado = [
+        'error' => false,
+        'mensaje' => '',
+        'empresa' => []  // Inicializar el array para los resultados de la empresa
+    ];
+
+    global $conexion;
+
+    try{
+        $sql = 'SELECT idEmpresa, nombre, rif, telefono, correo, direccion, ciudad, estado, codigoPostal, mensaje FROM empresa ORDER BY idEmpresa';
+        $st = $conexion->prepare($sql);
+        $st->execute();
+        $resultado['empresa'] = $st->fetchAll(PDO::FETCH_ASSOC);  // Utilizar PDO::FETCH_ASSOC para obtener un array asociativo
+    } catch(PDOException $e){
+        $resultado['error'] = true;
+        $resultado['mensaje'] = $e->getMessage();
+        // Puedes comentar o eliminar la siguiente línea si no quieres imprimir el error aquí
+        echo $e;
+    }
+    return $resultado;
 }
 
 function actualizar($codigo, $descripcion, $costoUSD, $porcentajeG, $categoria, $precioGanUSD, $cantidadIngresar, $cantidadAlerta, $existencia, $idProducto){
