@@ -735,11 +735,11 @@ function actualizarE($idEmpresa, $nombre, $rif, $telefono, $correo, $direccion, 
             $st->bindParam(10, $idEmpresa);
             $st->execute();
 
-       //     echo '<script>
-       //          // Recarga todos los frames de la página
-       //          parent.location.reload();
-       //          </script>';
-            header('location:config.php');
+            echo '<script>
+                 // Recarga todos los frames de la página
+                 parent.location.reload();
+                 </script>';
+          //  header('location:baseConfig.php');
         }catch(PDOException $e){
             $resultado['error'] = true;
             $resultado['mensaje'] = $e->getMessage();

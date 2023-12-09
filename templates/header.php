@@ -32,7 +32,7 @@
                 <a class="nav-link" href="javascript:top.location.href='../../sistema/pru.php'">Informes</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="javascript:top.location.href='../../sistema/config.php'">Configuración</a>
+                <a class="nav-link" href="javascript:top.location.href='../../sistema/baseConfig.php'">Configuración</a>
             </li>
         </ul>
     </div>
