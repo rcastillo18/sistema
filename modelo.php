@@ -837,11 +837,11 @@ function productos($idProducto, $codigo, $descripcion, $costoUSD, $porcentajeG, 
             $st->bindParam(9, $cantidadAlerta);
             $st->bindParam(10, $existencia);
             $st->execute(); 
-            header('location:pru.php');
-           // echo '<script>
+            //header('location:pru.php');
+            echo '<script>
 				 // Recarga todos los frames de la página
-			//	 parent.location.reload();
-			//	 </script>';
+				 parent.location.reload();
+				 </script>';
 
         }catch(PDOException $e){
             $resultado['error'] = true;
