@@ -4,8 +4,8 @@
   $inventario = mostrarProductos();
   $config= mostrarConfigu();
   foreach ($config as $filas) {
-      $tasaDCosto = $filas['tasaDolarCosto'];
-      $tasaDVenta = $filas['tasaDolarVenta'];
+    $tasaDCosto = $filas['tasaDolarCosto'];
+    $tasaDVenta = $filas['tasaDolarVenta'];
   }
 
  // echo $tasaDCosto;

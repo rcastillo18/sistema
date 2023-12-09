@@ -26,7 +26,7 @@
                 <table class="table">
                     <tbody>
                         <?php foreach ($empresa as $fila): ?>
-                            <td><input type="hidden" id="idEmpresa" name="idEmpresa" value="<?php echo $fila['idEmpresa']; ?>"></td>
+                            <input type="hidden" id="idEmpresa" name="idEmpresa" value="<?php echo $fila['idEmpresa']; ?>">
                             <tr>
                                 <td><strong>Nombre:</strong></td>
                                 <td><input type="text" id="nombre" name="nombre" value="<?php echo $fila['nombre']; ?>"></td>

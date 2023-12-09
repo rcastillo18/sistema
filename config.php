@@ -27,6 +27,7 @@
                 <table class="table">
                     <tbody>
                         <?php foreach ($configuracion as $fila): ?>
+                            <input type="hidden" id="idConfiguracion" name="idConfiguracion" value="<?php echo $fila['idConfiguracion']; ?>">
                             <tr>
                                 <td><strong>Tasa Dólar Costo:</strong></td>
                                 <td><input type="text" id="tasaDolarCosto" name="tasaDolarCosto" value="<?php echo $fila['tasaDolarCosto']; ?>"></td>

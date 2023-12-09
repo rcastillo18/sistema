@@ -68,17 +68,10 @@ switch($accion){
         break;
 
     case 'actualizar_Configuracion':
-        $idEmpresa = ($_POST['idEmpresa']);
-        $nombre = strtoupper($_POST['nombre']);
-        $rif = ($_POST['rif']);
-        $telefono = ($_POST['telefono']);
-        $correo = strtoupper($_POST['correo']);
-        $direccion = strtoupper($_POST['direccion']);
-        $ciudad = strtoupper($_POST['ciudad']);
-        $estado = strtoupper($_POST['estado']);
-        $codigoPostal = ($_POST['codigoPostal']);
-        $mensaje = strtoupper($_POST['mensaje']);
-        actualizarConfig($idEmpresa, $nombre, $rif, $telefono, $correo, $direccion, $ciudad, $estado, $codigoPostal, $mensaje); 
+        $idConfiguracion = ($_POST['idConfiguracion']);
+        $tasaDolarCosto = ($_POST['tasaDolarCosto']);
+        $tasaDolarVenta = ($_POST['tasaDolarVenta']);
+        actualizarConfig($idConfiguracion, $tasaDolarCosto, $tasaDolarVenta); 
         break;
 
     case 'actualizar_Empresa':
@@ -645,7 +638,7 @@ function actualizarC($idCedula ,$nombre, $saldoDisBs, $saldoDisDol, $deuda, $pag
         }
 }
 
-function actualizarConfig($idConfiguracion, $tasaDolarCosto, $tasaDolarVenta, $impresora){
+function actualizarConfig($idConfiguracion, $tasaDolarCosto, $tasaDolarVenta){
     $resultado = [
         'error' =>false,
         'mensaje' => ''
@@ -653,14 +646,13 @@ function actualizarConfig($idConfiguracion, $tasaDolarCosto, $tasaDolarVenta, $i
         global $conexion;
 
         try{
-             $sql = 'UPDATE configuracion SET idConfiguracion = ?, tasaDolarCosto = ?, tasaDolarVenta = ?, impresora = ?';
+             $sql = 'UPDATE configuracion SET idConfiguracion = ?, tasaDolarCosto = ?, tasaDolarVenta = ?';
             
             $st = $conexion->prepare($sql);
             
             $st->bindParam(1, $idConfiguracion);
             $st->bindParam(2, $tasaDolarCosto);
             $st->bindParam(3, $tasaDolarVenta);
-            $st->bindParam(4, $impresora);
             $st->execute();
 
        //     echo '<script>
@@ -708,7 +700,7 @@ function mostrarConfigu(){
 
     try{
         
-        $sql = 'SELECT idConfiguracion ,tasaDolarCosto, tasaDolarVenta, impresora FROM configuracion ORDER BY idConfiguracion';
+        $sql = 'SELECT idConfiguracion ,tasaDolarCosto, tasaDolarVenta FROM configuracion ORDER BY idConfiguracion';
         $st = $conexion->prepare($sql);
         $st->execute();
         $config = $st->fetchAll();        
