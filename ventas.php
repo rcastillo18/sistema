@@ -1,6 +1,22 @@
 <?php
     session_start();
     include 'templates/header.php';
+    include 'modelo.php';
+    $id = $_GET['id'];
+    $inventario = mostrarProductos();
+    $config= mostrarConfigu();
+    $consultarI = consultarInventario($id);
+    while ($fila = $consultarI) {
+        $fila['idProducto'];
+        $fila['codigo'];
+        $fila['descripcion'];
+        $fila['precioGanUSD'];
+        break;
+    }
+  foreach ($config as $filas) {
+    $tasaDCosto = $filas['tasaDolarCosto'];
+    $tasaDVenta = $filas['tasaDolarVenta'];
+  }
    // include 'modelo.php';
 // Verificar si la variable de sesión está definida
 $cedulaEncontrada = isset($_SESSION['cedulaEncontrada']) ? $_SESSION['cedulaEncontrada'] : false;
@@ -17,6 +33,34 @@ unset($_SESSION['cedulaEncontrada']);
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Ventas</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <style>
+        /* Estilos para la ventana emergente */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 40px;
+            width: 60%;
+            max-width: 800px;
+            max-height: 80%; /* Establece una altura máxima */
+            background-color: #fff;
+            border: 2px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
+            overflow: auto; /* Agrega barras de desplazamiento cuando sea necesario */
+        }
+
+        /* Estilos para el botón de cerrar */
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 
@@ -66,6 +110,7 @@ unset($_SESSION['cedulaEncontrada']);
     <div class="row mt-4">
         <div class="col-md-12">
             <table class="table">
+            <?php	if ($id >= 1){ ?>
                 <thead>
                     <tr>
                         <th>CÓDIGO</th>
@@ -76,15 +121,45 @@ unset($_SESSION['cedulaEncontrada']);
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td><input type="text" class="form-control" placeholder="Ingrese código"></td>
-                        <td><input type="text" class="form-control" placeholder="Ingrese descripción"></td>
+
+                    <!--<tr>
+                        <td><input type="text" class="form-control" value="<?php //echo $fila['codigo']; ?>"></td>
+                        <td><input type="text" class="form-control" value="<?php //echo $fila['descripcion']; ?>"></td>
                         <td><input type="text" class="form-control" placeholder="Ingrese cantidad"></td>
-                        <td><input type="text" class="form-control" placeholder="Ingrese precio"></td>
-                        <td><input type="text" class="form-control" placeholder="Ingrese total"></td>
-                    </tr>
+                        <td><input type="text" class="form-control" value="<?php //echo $fila['precioGanUSD']; ?>"></td>
+                        <td><input type="text" class="form-control" placeholder="Costo Total"></td>
+                    </tr>-->
+	                    <?php 
+	                    for ($i=0; $i < 1; $i++) { 
+	                    	tablaP();
+
+	                    }
+	                     ?>
+
                     <!-- Puedes agregar más filas según sea necesario -->
                 </tbody>
+             <?php   } else { ?>
+	             	<thead>
+	                    <tr>
+	                        <th>CÓDIGO</th>
+	                        <th>DESCRIPCIÓN</th>
+	                        <th>CANTIDAD</th>
+	                        <th>PRECIO</th>
+	                        <th>TOTAL</th>
+	                    </tr>
+	                </thead>
+	                <tbody>
+	                    <tr>
+	                        <td><input type="text" class="form-control" placeholder="Ingrese código"></td>
+	                        <td><input type="text" class="form-control" placeholder="Ingrese descripción"></td>
+	                        <td><input type="text" class="form-control" placeholder="Ingrese cantidad"></td>
+	                        <td><input type="text" class="form-control" placeholder="Ingrese precio"></td>
+	                        <td><input type="text" class="form-control" placeholder="Costo Total"></td>
+	                    </tr>
+	             	<thead>
+	                    <!-- Puedes agregar más filas según sea necesario -->
+	                </tbody>
+             <?php   } ?>
             </table>
 
             <!-- Botones Guardar Venta, Cancelar Venta, Guardar Crédito -->
@@ -116,75 +191,79 @@ unset($_SESSION['cedulaEncontrada']);
                 </tbody>
             </table>
         </div>
-        <div id="busquedaProductosDiv" style="display: none">
-    <label for="searchProducto">Buscar Producto:</label>
-    <input type="text" class="form-control" id="searchProducto" placeholder="Ingrese el producto" oninput="buscarProductos(this.value)">
-
-    <ul id="listaProductos" class="list-group">
-        <!-- Aquí se mostrarán los productos en tiempo real -->
-    </ul>
-</div>
     </div>
 </div>
 
 
-<script>
-    function buscarProductos(termino) {
-        // Aquí puedes implementar la lógica para buscar productos en tiempo real
-        // Puedes usar AJAX para consultar tu función mostrarProductos() con el término de búsqueda
-        // y actualizar dinámicamente la lista de productos en la página
-        // A continuación, hay un ejemplo simple que asume que mostrarProductos() devuelve un array de objetos con 'descripcion' y 'precioGanUSD'
-
-        // Simulación de la función mostrarProductos() con algunos productos de ejemplo
-        var productos = [
-            { descripcion: 'Producto 1', precioGanUSD: 20.00 },
-            { descripcion: 'Producto 2', precioGanUSD: 25.00 },
-            { descripcion: 'Producto 3', precioGanUSD: 30.00 }
-            // Agrega más productos según sea necesario
-        ];
-
-        var listaProductos = document.getElementById('listaProductos');
-        listaProductos.innerHTML = '';
-
-        // Filtra los productos que coinciden con el término de búsqueda
-        var productosFiltrados = productos.filter(function (producto) {
-            return producto.descripcion.toLowerCase().includes(termino.toLowerCase());
-        });
-
-        // Agrega los productos filtrados a la lista
-        productosFiltrados.forEach(function (producto) {
-            var listItem = document.createElement('li');
-            listItem.className = 'list-group-item';
-            listItem.textContent = producto.descripcion + ' - Precio: $' + producto.precioGanUSD.toFixed(2);
-            listaProductos.appendChild(listItem);
-        });
-    }
-</script>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<div class="popup" id="popup" scrolling = "auto" >
+    <div class="container mt-4 custom-table">
+    <!-- Sección de Inventario -->
+    <div class="row">
+        <!-- Tabla de Productos Existentes -->
+        <div class="col-md">
+            <table id="table" class="table table-striped table-bordered custom-table" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Descripción</th>
+                        <th>Precio (USD)</th>
+                        <th>Precio Bs</th>
+                        <th>Existencia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach($inventario as $fila) { ?>
+                <tr>
+                    <td><?= $fila['codigo']?></td>
+                    <td style='text-align:center;'><a href="<?='ventas.php?id=' . $fila['idProducto'] ?>"><?= $fila['descripcion']?></a></td>
+                    <td><?= $fila['precioGanUSD']?></td>
+                    <td><?= $precioBs= round($tasaDCosto * $fila['precioGanUSD'],2)?></td>
+                    <td><?= $fila['existencia']?></td>
+                </tr>
+                
+                <?php } ?>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+    <button class="close-button" onclick="closePopup()">X</button>
+</div>
+    <?php function tablaP() { ?>
+					<tr>
+                        <td><input type="text" class="form-control" value="<?php echo $fila['codigo']; ?>"></td>
+                        <td><input type="text" class="form-control" value="<?php echo $fila['descripcion']; ?>"></td>
+                        <td><input type="text" class="form-control" placeholder="Ingrese cantidad"></td>
+                        <td><input type="text" class="form-control" value="<?php echo $fila['precioGanUSD']; ?>"></td>
+                        <td><input type="text" class="form-control" placeholder="Costo Total"></td>
+                    </tr>
+    <?php } ?>
+</div>
+
 <script>
-    document.addEventListener('keydown', function (event) {
-        // Verifica si la tecla presionada es 'F8' y al mismo tiempo 'Ctrl' está presionado
-        if (event.key === 'F8') {
-            event.preventDefault();
-            mostrarBusquedaProductos();
-        }
-    });
+    $(document).ready( function () {
+        $('#table').DataTable();
+    } );
+</script>
 
-    function mostrarBusquedaProductos() {
-        // Aquí puedes agregar lógica para mostrar el modal o la sección con el campo de búsqueda y la lista de productos
-        // Puedes usar Bootstrap para un modal o simplemente mostrar y ocultar un div en la página
-        // Aquí hay un ejemplo simple usando un div en la página:
-
-        var busquedaProductosDiv = document.getElementById('busquedaProductosDiv');
-        busquedaProductosDiv.style.display = 'block';
-
-
-
-
+<script>
+// Función para mostrar la ventana emergente al presionar F8
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'F8') {
+        document.getElementById('popup').style.display = 'block';
     }
+});
+
+// Función para cerrar la ventana emergente
+function closePopup() {
+    document.getElementById('popup').style.display = 'none';
+}
 </script>
 
 
@@ -207,4 +286,10 @@ unset($_SESSION['cedulaEncontrada']);
         // Redirige a formCliente.php
         window.location.href = 'formClientes.php';
     }
+
 </script>
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+
+

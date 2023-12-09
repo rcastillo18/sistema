@@ -446,6 +446,29 @@ function mostrarInventario(){
     return $inventario;
 }
 
+function consultarInventario($id){   
+    $resultado = [
+        'error' =>false,
+        'mensaje' => ''
+    ];
+    global $conexion;
+
+    try{
+       
+        $sql = "SELECT * FROM producto WHERE idProducto = ? ";
+            $st = $conexion->prepare($sql);
+            $st->bindParam(1, $id);
+            $st->execute();
+            $consultarI = $st->fetch(PDO::FETCH_ASSOC); 
+ 
+    }catch(PDOException $e){
+        $resultado['error'] = true;
+        $resultado['mensaje'] = $e->getMessage();
+        //echo $e;
+    }
+    return $consultarI;
+}
+
 function consultarEjecutada($id){   
     $resultado = [
         'error' =>false,
