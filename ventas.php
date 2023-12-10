@@ -128,7 +128,7 @@ unset($_SESSION['cedulaEncontrada']);
 			</div>
             <!-- Botones Guardar Venta, Cancelar Venta, Guardar Crédito -->
             <div class="float-right">
-                <button type="button" class="btn btn-success">Guardar Venta (F1)</button>
+			<button type="button" class="btn btn-success" onclick="mostrarProductosEnBoton()">Guardar Venta (F1)</button>
                 <button type="button" class="btn btn-danger">Cancelar Venta (F5)</button>
                 <button type="button" class="btn btn-warning">Guardar Crédito (F10)</button>
             </div>
@@ -206,7 +206,7 @@ unset($_SESSION['cedulaEncontrada']);
 					<tr>
                         <td><input type="text" class="form-control" value="producto.codigo"></td>
                         <td><input type="text" class="form-control" value="<?php echo $fila['descripcion']; ?>"></td>
-                        <td><input type="number" class="form-control cantidad" placeholder="Ingrese cantidad" oninput="calcularCostoTotal(this)"></td>
+                        <td><input type="number" class="form-control cantidad" placeholder="Ingrese cantidad" id="cantidadPedido" name="cantidadPedido" oninput="calcularCostoTotal(this)"></td>
 						<td><input type="text" class="form-control precioBs" value="${producto.precioBs}" readonly></td>
 						<td><input type="text" class="form-control costoTotal" placeholder="Costo Total" readonly></td>
                     </tr>
@@ -237,38 +237,49 @@ function closePopup() {
 
 }
     // Función para agregar el producto seleccionado al array
-    function agregarProductoSeleccionado(codigo, descripcion, precioUSD, precioBs, existencia) {
+function agregarProductoSeleccionado(codigo, descripcion, precioUSD, precioBs, existencia) {
+    var productoExistente = productosSeleccionados.find(producto => producto.codigo === codigo);
+
+    if (productoExistente) {
+        // El producto ya existe en el array, actualizar la cantidad
+        productoExistente.cantidadPedido += 1; // Incrementar la cantidad, puedes establecer la cantidad como desees
+    } else {
+        // El producto no existe en el array, agregarlo
         var producto = {
             codigo: codigo,
             descripcion: descripcion,
+            cantidadPedido: 1, // Inicializa la cantidad en 1 (o la cantidad que desees)
             precioUSD: precioUSD,
             precioBs: precioBs,
             existencia: existencia
         };
         productosSeleccionados.push(producto);
-        //alert("Producto agregado: " + productosSeleccionados[0].descripcion); // Mostrar alerta con la información del producto agregado
-        closePopup();
-        mostrarProductosAgregados(); // Mostrar productos agregados en la ventana emergente
     }
+
+    closePopup();
+    mostrarProductosAgregados();
+}
+
 function mostrarProductosAgregados() {
     var tbodyProductos = document.getElementById('tbody-productos');
     tbodyProductos.innerHTML = ''; // Limpiar contenido anterior
 
     for (var i = 0; i < productosSeleccionados.length; i++) {
-    var producto = productosSeleccionados[i];
-    var fila = document.createElement('tr');
+        var producto = productosSeleccionados[i];
+        var fila = document.createElement('tr');
 
-    fila.innerHTML = `
-        <td><input type="text" class="form-control codigo" value="${producto.codigo}" readonly></td>
-        <td><input type="text" class="form-control descripcion" value="${producto.descripcion}" readonly></td>
-        <td><input type="number" class="form-control cantidad" placeholder="Ingrese cantidad" oninput="calcularCostoTotal(this)"></td>
-        <td><input type="text" class="form-control precioBs" value="${producto.precioBs}" readonly></td>
-        <td><input type="text" class="form-control costoTotal" placeholder="Costo Total" readonly></td>
-    `;
+        fila.innerHTML = `
+            <td><input type="text" class="form-control codigo" value="${producto.codigo}" readonly></td>
+            <td><input type="text" class="form-control descripcion" value="${producto.descripcion}" readonly></td>
+            <td><input type="number" class="form-control cantidad" value="${producto.cantidadPedido}" oninput="actualizarCantidad(${i}, this)"></td>
+            <td><input type="text" class="form-control precioBs" value="${producto.precioBs}" readonly></td>
+            <td><input type="text" class="form-control costoTotal" placeholder="Costo Total" readonly></td>
+        `;
 
-    tbodyProductos.appendChild(fila);
-	}
+        tbodyProductos.appendChild(fila);
+    }
 }
+
 
 function calcularCostoTotal(input) {
     var cantidad = input.value;
@@ -278,6 +289,27 @@ function calcularCostoTotal(input) {
     // Calcula el costo total y lo muestra en el campo correspondiente
     row.querySelector('.costoTotal').value = (parseFloat(precioBs) * parseInt(cantidad)) || 0;
 }
+
+function actualizarCantidad(index, input) {
+    var cantidad = parseInt(input.value);
+    productosSeleccionados[index].cantidadPedido = cantidad;
+    //alert(productosSeleccionados[index].cantidadPedido);
+    //alert(index);
+}
+
+function mostrarProductosEnBoton() {
+    var botonGuardarVenta = document.querySelector('.btn-success');
+    var textoBoton = 'Guardar Venta (F1): ';
+
+    for (var i = 0; i < productosSeleccionados.length; i++) {
+        var producto = productosSeleccionados[i];
+        textoBoton += `Código: ${producto.codigo}, Cantidad: ${producto.cantidadPedido} - `;
+    }
+
+    // Asignar el texto con la información de los productos al botón
+    botonGuardarVenta.textContent = textoBoton;
+}
+
 
 </script>
 
