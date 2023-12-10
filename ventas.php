@@ -2,7 +2,7 @@
     session_start();
     include 'templates/header.php';
     include 'modelo.php';
-    $id = $_GET['id'];
+    //	$id = $_GET['id'];
     $inventario = mostrarProductos();
     $config= mostrarConfigu();
     $consultarI = consultarInventario($id);
@@ -109,59 +109,23 @@ unset($_SESSION['cedulaEncontrada']);
     <!-- Tabla de Ventas -->
     <div class="row mt-4">
         <div class="col-md-12">
-            <table class="table">
-            <?php	if ($id >= 1){ ?>
-                <thead>
-                    <tr>
-                        <th>CÓDIGO</th>
-                        <th>DESCRIPCIÓN</th>
-                        <th>CANTIDAD</th>
-                        <th>PRECIO</th>
-                        <th>TOTAL</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <div id="productos-agregados">
+				<table id="tabla-productos" class="table">
+				    <thead>
+				        <tr>
+				            <th>CÓDIGO</th>
+				            <th>DESCRIPCIÓN</th>
+				            <th>CANTIDAD</th>
+				            <th>PRECIO Bs</th>
+				            <th>TOTAL</th>
+				        </tr>
+				    </thead>
+				    <tbody id="tbody-productos">
+				            <!-- Aquí se mostrarán los productos -->
 
-                    <!--<tr>
-                        <td><input type="text" class="form-control" value="<?php //echo $fila['codigo']; ?>"></td>
-                        <td><input type="text" class="form-control" value="<?php //echo $fila['descripcion']; ?>"></td>
-                        <td><input type="text" class="form-control" placeholder="Ingrese cantidad"></td>
-                        <td><input type="text" class="form-control" value="<?php //echo $fila['precioGanUSD']; ?>"></td>
-                        <td><input type="text" class="form-control" placeholder="Costo Total"></td>
-                    </tr>-->
-	                    <?php 
-	                    for ($i=0; $i < 1; $i++) { 
-	                    	tablaP();
-
-	                    }
-	                     ?>
-
-                    <!-- Puedes agregar más filas según sea necesario -->
-                </tbody>
-             <?php   } else { ?>
-	             	<thead>
-	                    <tr>
-	                        <th>CÓDIGO</th>
-	                        <th>DESCRIPCIÓN</th>
-	                        <th>CANTIDAD</th>
-	                        <th>PRECIO</th>
-	                        <th>TOTAL</th>
-	                    </tr>
-	                </thead>
-	                <tbody>
-	                    <tr>
-	                        <td><input type="text" class="form-control" placeholder="Ingrese código"></td>
-	                        <td><input type="text" class="form-control" placeholder="Ingrese descripción"></td>
-	                        <td><input type="text" class="form-control" placeholder="Ingrese cantidad"></td>
-	                        <td><input type="text" class="form-control" placeholder="Ingrese precio"></td>
-	                        <td><input type="text" class="form-control" placeholder="Costo Total"></td>
-	                    </tr>
-	             	<thead>
-	                    <!-- Puedes agregar más filas según sea necesario -->
-	                </tbody>
-             <?php   } ?>
-            </table>
-
+				    </tbody>
+				</table>
+			</div>
             <!-- Botones Guardar Venta, Cancelar Venta, Guardar Crédito -->
             <div class="float-right">
                 <button type="button" class="btn btn-success">Guardar Venta (F1)</button>
@@ -220,10 +184,13 @@ unset($_SESSION['cedulaEncontrada']);
                 <?php foreach($inventario as $fila) { ?>
                 <tr>
                     <td><?= $fila['codigo']?></td>
-                    <td style='text-align:center;'><a href="<?='ventas.php?id=' . $fila['idProducto'] ?>"><?= $fila['descripcion']?></a></td>
+                    <td style='text-align:center;'><?= $fila['descripcion']?></td>
                     <td><?= $fila['precioGanUSD']?></td>
                     <td><?= $precioBs= round($tasaDCosto * $fila['precioGanUSD'],2)?></td>
                     <td><?= $fila['existencia']?></td>
+                    <td><?= $fila['codigo']?></td>
+    <!-- Otros campos -->
+    		<td><a href="javascript:void(0);" onclick="agregarProductoSeleccionado('<?= $fila['codigo']?>', '<?= $fila['descripcion']?>', '<?= $fila['precioGanUSD']?>', '<?= $precioBs ?>', '<?= $fila['existencia']?>')">Seleccionar</a></td>
                 </tr>
                 
                 <?php } ?>
@@ -237,11 +204,11 @@ unset($_SESSION['cedulaEncontrada']);
 </div>
     <?php function tablaP() { ?>
 					<tr>
-                        <td><input type="text" class="form-control" value="<?php echo $fila['codigo']; ?>"></td>
+                        <td><input type="text" class="form-control" value="producto.codigo"></td>
                         <td><input type="text" class="form-control" value="<?php echo $fila['descripcion']; ?>"></td>
-                        <td><input type="text" class="form-control" placeholder="Ingrese cantidad"></td>
-                        <td><input type="text" class="form-control" value="<?php echo $fila['precioGanUSD']; ?>"></td>
-                        <td><input type="text" class="form-control" placeholder="Costo Total"></td>
+                        <td><input type="number" class="form-control cantidad" placeholder="Ingrese cantidad" oninput="calcularCostoTotal(this)"></td>
+						<td><input type="text" class="form-control precioBs" value="${producto.precioBs}" readonly></td>
+						<td><input type="text" class="form-control costoTotal" placeholder="Costo Total" readonly></td>
                     </tr>
     <?php } ?>
 </div>
@@ -253,6 +220,9 @@ unset($_SESSION['cedulaEncontrada']);
 </script>
 
 <script>
+// Array para almacenar los productos seleccionados
+var productosSeleccionados = [];
+
 // Función para mostrar la ventana emergente al presionar F8
 document.addEventListener('keydown', function(event) {
     if (event.key === 'F8') {
@@ -263,9 +233,53 @@ document.addEventListener('keydown', function(event) {
 // Función para cerrar la ventana emergente
 function closePopup() {
     document.getElementById('popup').style.display = 'none';
-}
-</script>
+    //mostrarProductosAgregados(); // Mostrar productos agregados en la ventana emergente
 
+}
+    // Función para agregar el producto seleccionado al array
+    function agregarProductoSeleccionado(codigo, descripcion, precioUSD, precioBs, existencia) {
+        var producto = {
+            codigo: codigo,
+            descripcion: descripcion,
+            precioUSD: precioUSD,
+            precioBs: precioBs,
+            existencia: existencia
+        };
+        productosSeleccionados.push(producto);
+        //alert("Producto agregado: " + productosSeleccionados[0].descripcion); // Mostrar alerta con la información del producto agregado
+        closePopup();
+        mostrarProductosAgregados(); // Mostrar productos agregados en la ventana emergente
+    }
+function mostrarProductosAgregados() {
+    var tbodyProductos = document.getElementById('tbody-productos');
+    tbodyProductos.innerHTML = ''; // Limpiar contenido anterior
+
+    for (var i = 0; i < productosSeleccionados.length; i++) {
+    var producto = productosSeleccionados[i];
+    var fila = document.createElement('tr');
+
+    fila.innerHTML = `
+        <td><input type="text" class="form-control codigo" value="${producto.codigo}" readonly></td>
+        <td><input type="text" class="form-control descripcion" value="${producto.descripcion}" readonly></td>
+        <td><input type="number" class="form-control cantidad" placeholder="Ingrese cantidad" oninput="calcularCostoTotal(this)"></td>
+        <td><input type="text" class="form-control precioBs" value="${producto.precioBs}" readonly></td>
+        <td><input type="text" class="form-control costoTotal" placeholder="Costo Total" readonly></td>
+    `;
+
+    tbodyProductos.appendChild(fila);
+	}
+}
+
+function calcularCostoTotal(input) {
+    var cantidad = input.value;
+    var row = input.parentNode.parentNode;
+    var precioBs = row.querySelector('.precioBs').value;
+
+    // Calcula el costo total y lo muestra en el campo correspondiente
+    row.querySelector('.costoTotal').value = (parseFloat(precioBs) * parseInt(cantidad)) || 0;
+}
+
+</script>
 
 <script>
     function verificarCedula(event) {
