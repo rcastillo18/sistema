@@ -257,15 +257,15 @@ function mostrarProductosAgregados() {
     for (var i = 0; i < productosSeleccionados.length; i++) {
         var producto = productosSeleccionados[i];
         var fila = document.createElement('tr');
-        var costoTotal = (producto.cantidadPedido * producto.precioBs); // Redondear a dos decimales
+        var costoTotal = (producto.cantidadPedido * producto.precioBs); 
 
 
         fila.innerHTML = `
-            <td><input type="text" class="form-control codigo" value="${producto.codigo}" readonly></td>
-            <td><input type="text" class="form-control descripcion" value="${producto.descripcion}" readonly></td>
-            <td><input type="text" class="form-control cantidad" placeholder="Ingrese Cantidad" value="${producto.cantidadPedido}" oninput="actualizarCantidad(${i}, this) , calcularCostoTotal(${i}, this)"></td>
-            <td><input type="text" class="form-control precioBs" value="${producto.precioBs}" readonly></td>
-            <td><input type="text" class="form-control costoTotal" value="${costoTotal}" readonly></td>
+            <td><input type="text" class="form-control codigo" name="codigo" value="${producto.codigo}" readonly></td>
+            <td><input type="text" class="form-control descripcion" name="descripcion" value="${producto.descripcion}" readonly></td>
+            <td><input type="text" class="form-control cantidad" name="cantidad" placeholder="Ingrese Cantidad" value="${producto.cantidadPedido}" oninput="actualizarCantidad(${i}, this) , calcularCostoTotal(${i}, this)"></td>
+            <td><input type="text" class="form-control precioBs" name="precioBs" value="${producto.precioBs}" readonly></td>
+            <td><input type="text" class="form-control costoTotal" name="costoTotal" value="${costoTotal}" readonly></td>
             <td><button type="button" class="btn btn-danger" onclick="eliminarFila(${i})">Eliminar</button></td>
 
         `;
@@ -307,6 +307,31 @@ function actualizarCantidad(index, input) {
     //alert(index);
 }
 
+function enviarProductosSeleccionados() {
+    fetch('modelo.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productosSeleccionados }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Ocurrió un problema al enviar los datos.');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Hacer algo con la respuesta del servidor, si es necesaria
+        console.log('Datos enviados correctamente:', data);
+        alert('Entro');
+    })
+    .catch(error => {
+        console.error('Error al enviar los datos:', error);
+        alert('Ocurrió un error al enviar los datos. Por favor, intenta de nuevo.');
+    });
+}
+
 function mostrarProductosEnBoton() {
     var botonGuardarVenta = document.querySelector('.btn-success');
     var textoBoton = 'Guardar Venta (F1): ';
@@ -317,17 +342,17 @@ function mostrarProductosEnBoton() {
 		if (typeof producto.cantidadPedido === 'number' && producto.cantidadPedido > 0) {
             // Si la cantidad es un número y mayor que cero
             var c = parseFloat(producto.costoTotal.value);
-            var ce = c.toFixed(2);
-            textoBoton += `Código: ${producto.codigo}, Cantidad: ${producto.cantidadPedido}, Costo: ${ce} - `;
-                // Asignar el texto con la información de los productos al botón
+            var ce = c.toFixed(2);// Redondear a dos decimales
+            textoBoton += `Código: ${producto.codigo}, Cantidad: ${producto.cantidadPedido}, Costo: ${ce} - `; // Asignar el texto con la información de los productos al botón
+            enviarProductosSeleccionados();
     		
         } else {
             // Si la cantidad no es un número válido o es menor o igual a cero
             // Manejo del error o mensaje de advertencia
             alert('La cantidad ingresada no es válida para el producto con código: ' + producto.codigo);
-            // También podrías lanzar una alerta, mostrar un mensaje, etc.
         }
     }
+
         botonGuardarVenta.textContent = textoBoton;
 }
 
