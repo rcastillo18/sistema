@@ -20,6 +20,3 @@ function conectar(){
     }
     return $conexion;
 }
-
- 
- 

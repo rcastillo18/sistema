@@ -3,16 +3,6 @@ include 'conexion.php';
 include 'security.php';
 //include 'header.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $productosSeleccionados = json_decode(file_get_contents('php://input'), true);
-
-    // Hacer algo con los datos recibidos, como procesarlos o guardarlos en la base de datos
-    // ...
-
-    // Puedes devolver una respuesta si es necesario
-    echo json_encode(['message' => 'Datos recibidos correctamente']);
-}
-
 $conexion = conectar();//en conexion.php
 
 $id = NULL;
@@ -202,6 +192,7 @@ switch($accion){
         $password = validar($_POST['password']);
         verificarIngreso($usuario, $password);
         break;
+
 }
 
 function imagen($id_AE, $img_1, $img_2, $img_3){

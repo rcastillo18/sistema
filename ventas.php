@@ -1,8 +1,11 @@
 <?php
     session_start();
     include 'templates/header.php';
-    include 'modelo.php';
+	//include 'conexion.php';
+	include 'modelo.php';
+
     //	$id = $_GET['id'];
+
     $inventario = mostrarProductos();
     $config= mostrarConfigu();
     $consultarI = consultarInventario($id);
@@ -128,7 +131,7 @@ unset($_SESSION['cedulaEncontrada']);
 			</div>
             <!-- Botones Guardar Venta, Cancelar Venta, Guardar Crédito -->
             <div class="float-right">
-			<button type="button" class="btn btn-success" onclick="mostrarProductosEnBoton()">Guardar Venta (F1)</button>
+				<button type="button" class="btn btn-success" onclick="mostrarProductosEnBoton()">Guardar Venta (F1)</button>
                 <button type="button" class="btn btn-danger">Cancelar Venta (F5)</button>
                 <button type="button" class="btn btn-warning">Guardar Crédito (F10)</button>
             </div>
@@ -202,12 +205,7 @@ unset($_SESSION['cedulaEncontrada']);
     </div>
     <button class="close-button" onclick="closePopup()">X</button>
 
-<script>
-    $(document).ready( function () {
-        $('#table').DataTable();
-    } );
-</script>
-
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script>
 // Array para almacenar los productos seleccionados
 var productosSeleccionados = [];
@@ -257,7 +255,8 @@ function mostrarProductosAgregados() {
     for (var i = 0; i < productosSeleccionados.length; i++) {
         var producto = productosSeleccionados[i];
         var fila = document.createElement('tr');
-        var costoTotal = (producto.cantidadPedido * producto.precioBs); 
+        var costoTotal = "Costo Total";
+        //(producto.cantidadPedido * producto.precioBs); 
 
 
         fila.innerHTML = `
@@ -291,9 +290,10 @@ function calcularCostoTotal(index, input) {
 
     // Calcula el costo total y lo muestra en el campo correspondiente
     row.querySelector('.costoTotal').value = (parseFloat(precioBs) * parseInt(cantidad)) || 0;
+    var c = row.querySelector('.costoTotal');
 
     if(row.querySelector('.costoTotal').value != 0){
-		productosSeleccionados[index].costoTotal = row.querySelector('.costoTotal');
+		productosSeleccionados[index].costoTotal = c;
     }else productosSeleccionados[index].costoTotal = 0;
     
 
@@ -305,31 +305,6 @@ function actualizarCantidad(index, input) {
 
     //alert(productosSeleccionados[index].cantidadPedido);
     //alert(index);
-}
-
-function enviarProductosSeleccionados() {
-    fetch('modelo.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ productosSeleccionados }),
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Ocurrió un problema al enviar los datos.');
-        }
-        return response.json();
-    })
-    .then(data => {
-        // Hacer algo con la respuesta del servidor, si es necesaria
-        console.log('Datos enviados correctamente:', data);
-        alert('Entro');
-    })
-    .catch(error => {
-        console.error('Error al enviar los datos:', error);
-        alert('Ocurrió un error al enviar los datos. Por favor, intenta de nuevo.');
-    });
 }
 
 function mostrarProductosEnBoton() {
@@ -344,7 +319,6 @@ function mostrarProductosEnBoton() {
             var c = parseFloat(producto.costoTotal.value);
             var ce = c.toFixed(2);// Redondear a dos decimales
             textoBoton += `Código: ${producto.codigo}, Cantidad: ${producto.cantidadPedido}, Costo: ${ce} - `; // Asignar el texto con la información de los productos al botón
-            enviarProductosSeleccionados();
     		
         } else {
             // Si la cantidad no es un número válido o es menor o igual a cero
@@ -354,6 +328,25 @@ function mostrarProductosEnBoton() {
     }
 
         botonGuardarVenta.textContent = textoBoton;
+    // Suponiendo que tienes la variable productosSeleccionados con datos en JavaScript
+
+    // Convertir productosSeleccionados a formato JSON
+    var datosAEnviar = JSON.stringify(productosSeleccionados);
+
+    // Realizar una solicitud AJAX para enviar los datos a un archivo PHP en el servidor
+    $.ajax({
+        type: "POST", // Método de envío
+        url: "guardarProductos.php", // Ruta al archivo PHP que procesará los datos
+        data: {productos: datosAEnviar}, // Datos a enviar (en este caso, la variable productosSeleccionados)
+        success: function(response) {
+            // Manejar la respuesta del servidor si es necesario
+            alert(response);
+        },
+        error: function(xhr, status, error) {
+            // Manejar errores si ocurre alguno durante la solicitud AJAX
+            console.error(xhr.responseText);
+        }
+    });
 }
 
 
@@ -383,5 +376,6 @@ function mostrarProductosEnBoton() {
 
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+
 
 
