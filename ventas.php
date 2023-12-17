@@ -239,7 +239,7 @@ function agregarProductoSeleccionado(codigo, descripcion, precioUSD, precioBs, e
             precioUSD: precioUSD,
             precioBs: precioBs,
             existencia: existencia,
-            costoTotal: 1 // Inicializa la cantidad en 1
+            costoTotal: "" // Inicializa costo en 1
         };
         productosSeleccionados.push(producto);
     }
@@ -255,16 +255,15 @@ function mostrarProductosAgregados() {
     for (var i = 0; i < productosSeleccionados.length; i++) {
         var producto = productosSeleccionados[i];
         var fila = document.createElement('tr');
-        var costoTotal = "Costo Total";
         //(producto.cantidadPedido * producto.precioBs); 
 
 
         fila.innerHTML = `
             <td><input type="text" class="form-control codigo" name="codigo" value="${producto.codigo}" readonly></td>
             <td><input type="text" class="form-control descripcion" name="descripcion" value="${producto.descripcion}" readonly></td>
-            <td><input type="text" class="form-control cantidad" name="cantidad" placeholder="Ingrese Cantidad" value="${producto.cantidadPedido}" oninput="actualizarCantidad(${i}, this) , calcularCostoTotal(${i}, this)"></td>
+            <td><input type="text" class="form-control cantidad" name="cantidad" placeholder="Ingrese Cantidad" value="${producto.cantidadPedido}" oninput="actualizarCantidad(${i}, this), calcularCostoTotal(${i}, this)"></td>
             <td><input type="text" class="form-control precioBs" name="precioBs" value="${producto.precioBs}" readonly></td>
-            <td><input type="text" class="form-control costoTotal" name="costoTotal" value="${costoTotal}" readonly></td>
+            <td><input type="text" class="form-control costoTotal" name="costoTotal" placeholder="Ingrese" value="${producto.costoTotal}"></td>
             <td><button type="button" class="btn btn-danger" onclick="eliminarFila(${i})">Eliminar</button></td>
 
         `;
@@ -272,7 +271,7 @@ function mostrarProductosAgregados() {
         tbodyProductos.appendChild(fila);
 
         actualizarCantidad(i, fila.querySelector('.cantidad'));
-        //calcularCostoTotal(i, fila.querySelector('.costoTotal'));
+        calcularCostoTotal(i, fila.querySelector('.cantidad'));
     }
 }
 
@@ -284,19 +283,18 @@ function eliminarFila(index) {
 
 
 function calcularCostoTotal(index, input) {
-    var cantidad = input.value;
-    var row = input.parentNode.parentNode;
-    var precioBs = row.querySelector('.precioBs').value;
+    var cantidad = parseInt(input.value); // Obtener la cantidad ingresada como número entero
+    var row = input.parentNode.parentNode; // Obtener la fila actual
+    var precioBs = parseFloat(row.querySelector('.precioBs').value); // Obtener el precio en Bs como número flotante
 
-    // Calcula el costo total y lo muestra en el campo correspondiente
-    row.querySelector('.costoTotal').value = (parseFloat(precioBs) * parseInt(cantidad)) || 0;
-    var c = row.querySelector('.costoTotal');
+    // Calcular el costo total multiplicando la cantidad por el precio en Bs
+    var costo = cantidad * precioBs;
 
-    if(row.querySelector('.costoTotal').value != 0){
-		productosSeleccionados[index].costoTotal = c;
-    }else productosSeleccionados[index].costoTotal = 0;
-    
+    // Actualizar el valor del campo costoTotal en la fila actual con el nuevo cálculo
+    row.querySelector('.costoTotal').value = isNaN(costo) ? '' : costo.toFixed(2);
 
+    // Actualizar el valor en el array productosSeleccionados si es necesario
+    productosSeleccionados[index].costoTotal = isNaN(costo) ? 0 : costo;
 }
 
 function actualizarCantidad(index, input) {
@@ -318,7 +316,7 @@ function mostrarProductosEnBoton() {
             // Si la cantidad es un número y mayor que cero
             var c = parseFloat(producto.costoTotal.value);
             var ce = c.toFixed(2);// Redondear a dos decimales
-            textoBoton += `Código: ${producto.codigo}, Cantidad: ${producto.cantidadPedido}, Costo: ${ce} - `; // Asignar el texto con la información de los productos al botón
+            textoBoton += `Código: ${producto.codigo}, Cantidad: ${producto.cantidadPedido}, Costo: ${producto.costoTotal} - `; // Asignar el texto con la información de los productos al botón
     		
         } else {
             // Si la cantidad no es un número válido o es menor o igual a cero
