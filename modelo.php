@@ -550,6 +550,40 @@ function eliminarEjecutada($id){
     header('location:eliminarE.php');
 }
 
+function agregarV($idVenta, $numeroVenta ,$idCedula ,$idProducto, $cantidadPedido ,$totalPagar, $fecha, $deudaCredito, $comentario){
+    $resultado = [
+        'error' =>false,
+        'mensaje' => ''
+    ];
+        global $conexion;
+
+        try{
+             $sql = 'INSERT INTO venta (idVenta, numeroVenta, idCedula ,idProducto, cantidadPedido, totalPagar, fecha, deudaCredito, comentario) VALUES (?,?,?,?,?,?,?,?,?)';
+            
+            $st = $conexion->prepare($sql);
+            $st->bindParam(1, $idVenta);
+            $st->bindParam(2, $numeroVenta);
+            $st->bindParam(3, $idCedula);
+            $st->bindParam(4, $idProducto);
+            $st->bindParam(5, $cantidadPedido);
+            $st->bindParam(6, $totalPagar);
+            $st->bindParam(7, $fecha);
+            $st->bindParam(8, $deudaCredito);
+            $st->bindParam(9, $comentario);
+            $st->execute(); 
+          //  header('location:login.php');
+         //   echo '<script>
+            //   Recarga todos los frames de la página
+            //   parent.location.reload();
+            //   </script>';
+
+        }catch(PDOException $e){
+            $resultado['error'] = true;
+            $resultado['mensaje'] = $e->getMessage();
+            echo $e;
+        }
+}
+
 function agregarC($idCedula ,$nombre, $saldoDisBs, $saldoDisDol, $deuda, $pagoDeudaDol, $comentarios, $telefono){
     $resultado = [
         'error' =>false,
@@ -564,8 +598,8 @@ function agregarC($idCedula ,$nombre, $saldoDisBs, $saldoDisDol, $deuda, $pagoDe
             $st->bindParam(1, $idCedula);
             $st->bindParam(2, $nombre);
             $st->bindParam(3, $saldoDisBs);
-            $st->bindParam(4, $saldoDisDol);
-            $st->bindParam(5, $deuda);
+                $st->bindParam(4, $saldoDisDol);
+                $st->bindParam(5, $deuda);
             $st->bindParam(6, $pagoDeudaDol);
             $st->bindParam(7, $comentarios);
             $st->bindParam(8, $telefono);
@@ -886,6 +920,28 @@ function mostrarProductos(){
         echo $e;
     }
     return $productos;	
+}
+
+function mostrarVentas(){   
+    $resultado = [
+        'error' =>false,
+        'mensaje' => ''
+    ];
+
+    global $conexion;
+
+    try{
+        
+        $sql = 'SELECT idVenta ,idCedula ,idProducto, totalPagar, fecha, deudaCredito, comentario FROM venta ORDER BY idVenta';
+        $st = $conexion->prepare($sql);
+        $st->execute();
+        $productos = $st->fetchAll();        
+    }catch(PDOException $e){
+        $resultado['error'] = true;
+        $resultado['mensaje'] = $e->getMessage();
+        echo $e;
+    }
+    return $productos;  
 }
 
 function consultarPlanificada($id){   

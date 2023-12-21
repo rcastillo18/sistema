@@ -138,8 +138,8 @@ unset($_SESSION['cedulaEncontrada']);
 
             <!-- Comentarios -->
             <div class="mt-3">
-                <label for="comentarios">COMENTARIOS:</label>
-                <textarea class="form-control" id="comentarios" rows="2" placeholder="Escriba un comentario"></textarea>
+                <label for="comentario">COMENTARIOS:</label>
+                <textarea class="form-control" id="comentario" name="comentario" rows="2" placeholder="Escriba un comentario"></textarea>
             </div>
         </div>
     </div>
@@ -239,7 +239,7 @@ function agregarProductoSeleccionado(codigo, descripcion, precioUSD, precioBs, e
             precioUSD: precioUSD,
             precioBs: precioBs,
             existencia: existencia,
-            costoTotal: "" // Inicializa costo en 1
+            costoTotal: ""
         };
         productosSeleccionados.push(producto);
     }
@@ -311,13 +311,16 @@ function mostrarProductosEnBoton() {
 
     for (var i = 0; i < productosSeleccionados.length; i++) {
         var producto = productosSeleccionados[i];
+      //  producto.numeroVenta += 1;
 
 		if (typeof producto.cantidadPedido === 'number' && producto.cantidadPedido > 0) {
             // Si la cantidad es un número y mayor que cero
             var c = parseFloat(producto.costoTotal.value);
             var ce = c.toFixed(2);// Redondear a dos decimales
+        //    producto.numeroVenta = numeroVenta; // Asignar el mismo número de venta a todos los productos
             textoBoton += `Código: ${producto.codigo}, Cantidad: ${producto.cantidadPedido}, Costo: ${producto.costoTotal} - `; // Asignar el texto con la información de los productos al botón
     		
+
         } else {
             // Si la cantidad no es un número válido o es menor o igual a cero
             // Manejo del error o mensaje de advertencia
