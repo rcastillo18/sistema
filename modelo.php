@@ -932,7 +932,7 @@ function mostrarVentas(){
 
     try{
         
-        $sql = 'SELECT idVenta ,idCedula ,idProducto, totalPagar, fecha, deudaCredito, comentario FROM venta ORDER BY idVenta';
+        $sql = 'SELECT idVenta , numeroVenta, idCedula ,idProducto, totalPagar, fecha, deudaCredito, comentario FROM venta ORDER BY idVenta';
         $st = $conexion->prepare($sql);
         $st->execute();
         $productos = $st->fetchAll();        

@@ -150,10 +150,10 @@ unset($_SESSION['cedulaEncontrada']);
             <table class="table">
                 <tbody>
                     <tr>
-                        <td><strong>TOTAL Bs.:</strong></td>
-                        <td><input type="text" class="form-control" readonly value="500.00"></td>
-                        <td><strong>TOTAL $:</strong></td>
-                        <td><input type="text" class="form-control" readonly value="50.00"></td>
+                        <td><strong>TOTAL $.:</strong></td>
+                        <td><input type="text" class="form-control" readonly id="totalDolaresInput"></td>
+                        <td><strong>TOTAL BS:</strong></td>
+                        <td><input type="text" class="form-control" readonly id="totalPagarInput"></td>
                     </tr>
                 </tbody>
             </table>
@@ -206,10 +206,16 @@ unset($_SESSION['cedulaEncontrada']);
     <button class="close-button" onclick="closePopup()">X</button>
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+
+
 <script>
 // Array para almacenar los productos seleccionados
 var productosSeleccionados = [];
-
+var totalPagar = 0;
+var totalPagarInput = document.getElementById("totalPagarInput");
+var totalDolares = 0;
+var totalDolaresInput = document.getElementById("totalDolaresInput");
 // Función para mostrar la ventana emergente al presionar F8
 document.addEventListener('keydown', function(event) {
     if (event.key === 'F8') {
@@ -261,9 +267,9 @@ function mostrarProductosAgregados() {
         fila.innerHTML = `
             <td><input type="text" class="form-control codigo" name="codigo" value="${producto.codigo}" readonly></td>
             <td><input type="text" class="form-control descripcion" name="descripcion" value="${producto.descripcion}" readonly></td>
-            <td><input type="text" class="form-control cantidad" name="cantidad" placeholder="Ingrese Cantidad" value="${producto.cantidadPedido}" oninput="actualizarCantidad(${i}, this), calcularCostoTotal(${i}, this)"></td>
+            <td><input type="text" class="form-control cantidad" name="cantidad" placeholder="Ingrese Cantidad" value="${producto.cantidadPedido}" oninput="actualizarCantidad(${i}, this), calcularCostoTotal(${i}, this), actualizarTotal(${i}, this)"></td>
             <td><input type="text" class="form-control precioBs" name="precioBs" value="${producto.precioBs}" readonly></td>
-            <td><input type="text" class="form-control costoTotal" name="costoTotal" placeholder="Ingrese" value="${producto.costoTotal}"></td>
+            <td><input type="text" class="form-control costoTotal" name="costoTotal" id="costoTotal_${i}" placeholder="Ingrese" value="${producto.costoTotal}"></td>
             <td><button type="button" class="btn btn-danger" onclick="eliminarFila(${i})">Eliminar</button></td>
 
         `;
@@ -272,6 +278,8 @@ function mostrarProductosAgregados() {
 
         actualizarCantidad(i, fila.querySelector('.cantidad'));
         calcularCostoTotal(i, fila.querySelector('.cantidad'));
+        asignarEventoInputCostoTotal(i);
+
     }
 }
 
@@ -297,10 +305,29 @@ function calcularCostoTotal(index, input) {
     productosSeleccionados[index].costoTotal = isNaN(costo) ? 0 : costo;
 }
 
+function actualizarTotal(index, input) {
+    //alert(input);
+    // Actualizar la variable totalPagar con el valor actualizado de productosSeleccionados[index].costoTotal
+    totalPagar = productosSeleccionados.reduce((total, producto) => total + parseFloat(producto.costoTotal || 0), 0);
+    
+    // Actualizar el valor del campo totalPagarInput
+    totalPagarInput.value = totalPagar.toFixed(2) + ' Bs';;
+
+    //alert(<?php echo json_encode($tasaDCosto) ?>);
+    totalDolares = totalPagar / <?php echo json_encode($tasaDCosto)?>;
+    totalDolaresInput.value = totalDolares.toFixed(2) + ' $';;
+}
+// Función para asignar el evento input al campo costoTotal
+function asignarEventoInputCostoTotal(index) {
+    var campoCostoTotal = document.getElementById(`costoTotal_${index}`);
+    campoCostoTotal.addEventListener('input', function() {
+        actualizarTotal(index, this);
+    });
+}
+
 function actualizarCantidad(index, input) {
     var cantidad = parseInt(input.value);
     productosSeleccionados[index].cantidadPedido = cantidad;
-
     //alert(productosSeleccionados[index].cantidadPedido);
     //alert(index);
 }
@@ -315,9 +342,10 @@ function mostrarProductosEnBoton() {
 
 		if (typeof producto.cantidadPedido === 'number' && producto.cantidadPedido > 0) {
             // Si la cantidad es un número y mayor que cero
-            var c = parseFloat(producto.costoTotal.value);
-            var ce = c.toFixed(2);// Redondear a dos decimales
-        //    producto.numeroVenta = numeroVenta; // Asignar el mismo número de venta a todos los productos
+            //var c = parseFloat(producto.costoTotal.value);
+            //var ce = c.toFixed(2);// Redondear a dos decimales  
+            //producto.numeroVenta = numeroVenta; // Asignar el mismo número de venta a todos los productos
+
             textoBoton += `Código: ${producto.codigo}, Cantidad: ${producto.cantidadPedido}, Costo: ${producto.costoTotal} - `; // Asignar el texto con la información de los productos al botón
     		
 
